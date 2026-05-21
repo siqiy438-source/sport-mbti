@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAvatarUrl } from "../lib/avatars";
 import type { Gender } from "../types";
 
@@ -32,6 +32,11 @@ export default function Avatar({
   alt,
 }: AvatarProps) {
   const [errored, setErrored] = useState(false);
+
+  // gender / id 切换时重置错误状态，给新图一次加载机会
+  useEffect(() => {
+    setErrored(false);
+  }, [id, gender]);
 
   if (errored) {
     return (
