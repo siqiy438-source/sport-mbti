@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import Landing from "./pages/Landing";
 import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
+import PersonalityDetail from "./pages/PersonalityDetail";
+import Gallery from "./pages/Gallery";
+import { navigate, useRoute } from "./lib/router";
 import type { Personality } from "./types";
-
-type Stage = "landing" | "quiz" | "result";
 
 const STORAGE_KEY = "smbti_result_v1";
 
 export default function App() {
-  const [stage, setStage] = useState<Stage>("landing");
+  const route = useRoute();
   const [result, setResult] = useState<Personality | null>(null);
 
   useEffect(() => {
@@ -23,34 +24,52 @@ export default function App() {
     }
   }, []);
 
+  // /result 但是没有结果 → 跳到 quiz
+  useEffect(() => {
+    if (route.name === "result" && !result) {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) navigate({ name: "quiz" });
+    }
+  }, [route, result]);
+
   return (
     <div className="min-h-screen bg-bg text-ink">
-      {stage === "landing" && (
+      {route.name === "landing" && (
         <Landing
           lastResult={result}
-          onStart={() => setStage("quiz")}
-          onViewResult={() => setStage("result")}
+          onStart={() => navigate({ name: "quiz" })}
+          onViewResult={() => navigate({ name: "result" })}
+          onPickType={(id) => navigate({ name: "type", id })}
+          onViewGallery={() => navigate({ name: "gallery" })}
         />
       )}
-      {stage === "quiz" && (
+      {route.name === "quiz" && (
         <Quiz
           onDone={(p) => {
             setResult(p);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-            setStage("result");
+            navigate({ name: "result" });
           }}
-          onCancel={() => setStage("landing")}
+          onCancel={() => navigate({ name: "landing" })}
         />
       )}
-      {stage === "result" && result && (
+      {route.name === "result" && result && (
         <Result
           personality={result}
           onRestart={() => {
             localStorage.removeItem(STORAGE_KEY);
             setResult(null);
-            setStage("quiz");
+            navigate({ name: "quiz" });
           }}
-          onHome={() => setStage("landing")}
+          onHome={() => navigate({ name: "landing" })}
+        />
+      )}
+      {route.name === "type" && <PersonalityDetail id={route.id} />}
+      {route.name === "gallery" && (
+        <Gallery
+          onPickType={(id) => navigate({ name: "type", id })}
+          onHome={() => navigate({ name: "landing" })}
+          onStart={() => navigate({ name: "quiz" })}
         />
       )}
     </div>
