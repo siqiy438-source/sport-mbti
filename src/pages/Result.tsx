@@ -101,7 +101,7 @@ export default function Result({
         </div>
 
         {/* 主视觉：大图 */}
-        <div className="relative bg-bg">
+        <div className="relative">
           <div className="absolute top-2 left-6 text-[11px] text-muted tracking-widest z-10">
             你的运动人格类型是：
           </div>
@@ -116,7 +116,7 @@ export default function Result({
         </div>
 
         {/* 名字 + 一句吐槽 */}
-        <div className="bg-card px-6 pt-5 pb-6 text-center">
+        <div className="px-6 pt-2 pb-5 text-center">
           <div className="font-serif text-lg md:text-xl text-accent tracking-wide">
             {personality.en}
           </div>
@@ -129,20 +129,20 @@ export default function Result({
         </div>
 
         {/* 描述 */}
-        <div className="bg-card px-6 pb-6">
-          <div className="bg-accentSoft/60 rounded-2xl p-5 text-ink/90 leading-relaxed text-sm md:text-base">
+        <div className="px-6 pb-5">
+          <div className="bg-card/70 rounded-2xl p-5 text-ink/90 leading-relaxed text-sm md:text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
             {personality.desc}
           </div>
         </div>
 
         {/* 雷达图 */}
-        <div className="bg-card px-6 pb-6">
+        <div className="px-6 pb-5">
           <RadarChart personality={personality} />
         </div>
 
         {/* 底栏 */}
-        <div className="bg-card px-6 pb-5 text-center text-xs text-muted border-t border-ink/5 pt-4">
-          SMBTI · {personality.category} · siqiy438-source.github.io/sport-mbti
+        <div className="px-6 pb-5 text-center text-xs text-muted border-t border-ink/8 pt-4 mx-6">
+          SMBTI · {personality.category}
         </div>
       </div>
 
