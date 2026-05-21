@@ -53,7 +53,12 @@ export default function Landing({
           不严肃 · 不准确 · 但很真实
         </p>
 
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-5">
+          <div className="inline-flex items-center gap-3">
+            <span className="text-xs md:text-sm text-muted">角色形象</span>
+            <GenderSwitcher variant="full" withIcon />
+          </div>
+
           <button
             onClick={onStart}
             className="px-10 py-4 bg-accent text-white rounded-full hover:opacity-90 transition shadow-card text-lg font-medium"

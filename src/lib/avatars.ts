@@ -14,7 +14,7 @@ export function loadGender(): Gender {
   if (typeof window === "undefined") return "female";
   const stored = window.localStorage.getItem(GENDER_KEY);
   if (stored === "male" || stored === "female") return stored;
-  return "female";
+  return "male";
 }
 
 export function saveGender(g: Gender): void {

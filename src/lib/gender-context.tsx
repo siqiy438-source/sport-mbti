@@ -16,13 +16,13 @@ interface GenderContextValue {
 }
 
 const GenderContext = createContext<GenderContextValue>({
-  gender: "female",
+  gender: "male",
   setGender: () => {},
   toggleGender: () => {},
 });
 
 export function GenderProvider({ children }: { children: ReactNode }) {
-  const [gender, setGenderState] = useState<Gender>("female");
+  const [gender, setGenderState] = useState<Gender>("male");
 
   useEffect(() => {
     setGenderState(loadGender());
@@ -37,7 +37,7 @@ export function GenderProvider({ children }: { children: ReactNode }) {
       },
       toggleGender: () => {
         setGenderState((prev) => {
-          const next: Gender = prev === "female" ? "male" : "female";
+          const next: Gender = prev === "male" ? "female" : "male";
           saveGender(next);
           return next;
         });

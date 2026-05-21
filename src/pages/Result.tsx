@@ -112,8 +112,8 @@ export default function Result({
       {/* 切换 + 下载（不在卡片里，只是操作区） */}
       <div className="mt-6 space-y-3">
         <div className="flex items-center justify-between gap-3 px-1">
-          <span className="text-xs text-muted">海报形象</span>
-          <GenderSwitcher variant="full" />
+          <span className="text-sm text-muted">海报形象</span>
+          <GenderSwitcher variant="full" withIcon />
         </div>
 
         <button
