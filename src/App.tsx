@@ -5,38 +5,42 @@ import Result from "./pages/Result";
 import PersonalityDetail from "./pages/PersonalityDetail";
 import Gallery from "./pages/Gallery";
 import { navigate, useRoute } from "./lib/router";
-import type { Personality } from "./types";
+import type { MbtiType, Personality } from "./types";
 
-const STORAGE_KEY = "smbti_result_v1";
+const STORAGE_KEY = "smbti_result_v2";
+
+interface StoredResult {
+  personality: Personality;
+  userMbti: MbtiType;
+}
 
 export default function App() {
   const route = useRoute();
-  const [result, setResult] = useState<Personality | null>(null);
+  const [stored, setStored] = useState<StoredResult | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
       try {
-        setResult(JSON.parse(stored) as Personality);
+        setStored(JSON.parse(raw) as StoredResult);
       } catch {
         /* ignore */
       }
     }
   }, []);
 
-  // /result 但是没有结果 → 跳到 quiz
   useEffect(() => {
-    if (route.name === "result" && !result) {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) navigate({ name: "quiz" });
+    if (route.name === "result" && !stored) {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) navigate({ name: "quiz" });
     }
-  }, [route, result]);
+  }, [route, stored]);
 
   return (
     <div className="min-h-screen bg-bg text-ink">
       {route.name === "landing" && (
         <Landing
-          lastResult={result}
+          lastResult={stored?.personality ?? null}
           onStart={() => navigate({ name: "quiz" })}
           onViewResult={() => navigate({ name: "result" })}
           onPickType={(id) => navigate({ name: "type", id })}
@@ -45,20 +49,22 @@ export default function App() {
       )}
       {route.name === "quiz" && (
         <Quiz
-          onDone={(p) => {
-            setResult(p);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+          onDone={(personality, userMbti) => {
+            const next = { personality, userMbti };
+            setStored(next);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
             navigate({ name: "result" });
           }}
           onCancel={() => navigate({ name: "landing" })}
         />
       )}
-      {route.name === "result" && result && (
+      {route.name === "result" && stored && (
         <Result
-          personality={result}
+          personality={stored.personality}
+          userMbti={stored.userMbti}
           onRestart={() => {
             localStorage.removeItem(STORAGE_KEY);
-            setResult(null);
+            setStored(null);
             navigate({ name: "quiz" });
           }}
           onHome={() => navigate({ name: "landing" })}

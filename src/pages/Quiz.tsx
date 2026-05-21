@@ -5,7 +5,7 @@ import {
   initialScores,
   matchPersonality,
 } from "../lib/calculate";
-import type { Personality, Question, QuestionOption } from "../types";
+import type { MbtiType, Personality, Question, QuestionOption } from "../types";
 
 const QUIZ_LENGTH = 20;
 
@@ -27,7 +27,7 @@ export default function Quiz({
   onDone,
   onCancel,
 }: {
-  onDone: (p: Personality) => void;
+  onDone: (p: Personality, userMbti: MbtiType) => void;
   onCancel: () => void;
 }) {
   const [questions] = useState<Question[]>(buildQuiz);
@@ -46,8 +46,8 @@ export default function Quiz({
     setScores(next);
     window.setTimeout(() => {
       if (idx + 1 >= total) {
-        const p = matchPersonality(next);
-        onDone(p);
+        const { personality, mbti } = matchPersonality(next);
+        onDone(personality, mbti);
       } else {
         setIdx(idx + 1);
         setPicked(null);

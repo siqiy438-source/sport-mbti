@@ -97,8 +97,12 @@ function Header() {
 function HeroCard({ personality }: { personality: Personality }) {
   return (
     <div className="bg-card rounded-3xl p-6 md:p-8 shadow-card flex flex-col items-center justify-center text-center min-h-[280px]">
+      <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-accentSoft text-accent text-xs">
+        <span>MBTI</span>
+        <span className="font-bold tracking-widest">{personality.mbti}</span>
+      </div>
       <div className="text-xs text-muted mb-2 tracking-widest">
-        你的人格类型是：
+        人格类型：
       </div>
       <div className="font-serif text-3xl md:text-4xl text-ink mb-3">
         {personality.cn}

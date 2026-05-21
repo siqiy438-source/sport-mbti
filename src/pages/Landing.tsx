@@ -79,8 +79,8 @@ export default function Landing({
               onClick={() => onPickType(p.id)}
               className="bg-card rounded-2xl p-3 md:p-4 shadow-card text-center hover:scale-105 hover:bg-accentSoft/30 transition cursor-pointer"
             >
-              <div className="text-[10px] text-muted mb-1">
-                你的人格类型是：
+              <div className="text-[9px] text-muted/80 font-mono mb-1 tracking-widest">
+                {p.mbti}
               </div>
               <div className="text-3xl md:text-4xl mb-1">{p.emoji}</div>
               <div className="text-accent font-medium text-xs md:text-sm">

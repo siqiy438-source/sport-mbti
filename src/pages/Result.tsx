@@ -3,15 +3,18 @@ import { toPng } from "html-to-image";
 import {
   DIMENSIONS,
   DIMENSION_LABELS,
+  type MbtiType,
   type Personality,
 } from "../types";
 
 export default function Result({
   personality,
+  userMbti,
   onRestart,
   onHome,
 }: {
   personality: Personality;
+  userMbti: MbtiType;
   onRestart: () => void;
   onHome: () => void;
 }) {
@@ -42,6 +45,15 @@ export default function Result({
         className="bg-card rounded-3xl p-6 md:p-10 shadow-card"
       >
         <div className="text-center">
+          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-accentSoft text-accent text-xs md:text-sm">
+            <span>MBTI</span>
+            <span className="font-bold tracking-widest">{userMbti}</span>
+            {userMbti !== personality.mbti && (
+              <span className="text-muted/80 text-[10px]">
+                · 推荐型 {personality.mbti}
+              </span>
+            )}
+          </div>
           <div className="text-xs md:text-sm text-muted mb-2 tracking-widest">
             你的运动人格类型是：
           </div>
