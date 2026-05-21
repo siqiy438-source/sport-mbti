@@ -28,17 +28,16 @@ export default function Landing({
         <nav className="flex items-center gap-3 md:gap-5 text-sm text-muted">
           <button
             onClick={onStart}
-            className="hidden sm:inline hover:text-accent transition whitespace-nowrap"
+            className="hover:text-accent transition whitespace-nowrap"
           >
             开始测试
           </button>
           <button
             onClick={onViewGallery}
-            className="hidden sm:inline hover:text-accent transition whitespace-nowrap"
+            className="hover:text-accent transition whitespace-nowrap"
           >
             人格图鉴
           </button>
-          <GenderSwitcher />
         </nav>
       </header>
 

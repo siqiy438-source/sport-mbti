@@ -1,6 +1,5 @@
 import { personalities } from "../data/personalities";
 import Avatar from "../components/Avatar";
-import GenderSwitcher from "../components/GenderSwitcher";
 import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 
@@ -35,15 +34,12 @@ export default function Gallery({
           >
             <Logo size="sm" />
           </button>
-          <div className="flex items-center gap-3">
-            <GenderSwitcher />
-            <button
-              onClick={onStart}
-              className="hidden sm:inline text-sm text-accent hover:opacity-80 transition whitespace-nowrap"
-            >
-              开始测试 →
-            </button>
-          </div>
+          <button
+            onClick={onStart}
+            className="text-sm text-accent hover:opacity-80 transition whitespace-nowrap"
+          >
+            开始测试 →
+          </button>
         </div>
       </header>
 

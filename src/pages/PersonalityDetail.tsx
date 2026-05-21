@@ -8,7 +8,6 @@ import {
 } from "../types";
 import { navigate } from "../lib/router";
 import Avatar from "../components/Avatar";
-import GenderSwitcher from "../components/GenderSwitcher";
 import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 
@@ -81,11 +80,10 @@ function Header() {
         <nav className="flex items-center gap-3 md:gap-4 text-sm text-muted">
           <button
             onClick={() => navigate({ name: "gallery" })}
-            className="hover:text-accent transition hidden sm:inline"
+            className="hover:text-accent transition"
           >
             人格图鉴
           </button>
-          <GenderSwitcher />
         </nav>
       </div>
     </header>
