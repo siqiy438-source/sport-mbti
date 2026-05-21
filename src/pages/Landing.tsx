@@ -56,7 +56,7 @@ export default function Landing({
         <div className="flex flex-col items-center gap-5">
           <div className="inline-flex items-center gap-3">
             <span className="text-xs md:text-sm text-muted">角色形象</span>
-            <GenderSwitcher variant="full" withIcon />
+            <GenderSwitcher variant="full" />
           </div>
 
           <button

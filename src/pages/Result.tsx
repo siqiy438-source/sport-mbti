@@ -113,7 +113,7 @@ export default function Result({
       <div className="mt-6 space-y-3">
         <div className="flex items-center justify-between gap-3 px-1">
           <span className="text-sm text-muted">海报形象</span>
-          <GenderSwitcher variant="full" withIcon />
+          <GenderSwitcher variant="full" />
         </div>
 
         <button
