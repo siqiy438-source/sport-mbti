@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import {
   DIMENSIONS,
@@ -25,8 +25,22 @@ export default function Result({
   const { gender } = useGender();
   const cardRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
+  const [canShareFiles, setCanShareFiles] = useState(false);
 
-  async function downloadCard() {
+  // 检测浏览器是否支持文件分享（手机端能直接调起系统分享面板 → 保存到相册 / 微信）
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    if (typeof navigator.share !== "function") return;
+    if (typeof navigator.canShare !== "function") return;
+    try {
+      const probe = new File([new Blob()], "probe.png", { type: "image/png" });
+      setCanShareFiles(navigator.canShare({ files: [probe] }));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  async function shareOrDownload() {
     if (!cardRef.current) return;
     setSaving(true);
     try {
@@ -34,8 +48,31 @@ export default function Result({
         pixelRatio: 2,
         backgroundColor: "#F5EFE3",
       });
+      const filename = `smbti-${personality.en}-${gender}.png`;
+
+      // 手机端：优先调起系统分享面板（用户可选「保存图像」「微信」「AirDrop」等）
+      if (canShareFiles) {
+        try {
+          const blob = await (await fetch(dataUrl)).blob();
+          const file = new File([blob], filename, { type: "image/png" });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `我的运动人格：${personality.cn}`,
+              text: `「${personality.punch}」 — SMBTI 运动人格测试`,
+            });
+            return;
+          }
+        } catch (err) {
+          // 用户取消分享：AbortError，不要 fallback
+          if ((err as Error)?.name === "AbortError") return;
+          // 其他错误：继续 fallback 到 download
+        }
+      }
+
+      // Fallback：桌面浏览器或不支持的 in-app webview → 触发下载
       const link = document.createElement("a");
-      link.download = `smbti-${personality.en}-${gender}.png`;
+      link.download = filename;
       link.href = dataUrl;
       link.click();
     } finally {
@@ -117,12 +154,21 @@ export default function Result({
         </div>
 
         <button
-          onClick={downloadCard}
+          onClick={shareOrDownload}
           disabled={saving}
           className="w-full py-3.5 bg-accent text-white rounded-full hover:opacity-90 transition disabled:opacity-60 font-medium"
         >
-          {saving ? "生成中..." : "下载结果图 · 分享给朋友"}
+          {saving
+            ? "生成中..."
+            : canShareFiles
+              ? "保存图片 · 分享给朋友"
+              : "下载结果图 · 分享给朋友"}
         </button>
+        {canShareFiles && (
+          <p className="text-center text-xs text-muted -mt-1">
+            点击后选「存储到照片」即可保存到相册
+          </p>
+        )}
         <div className="flex gap-3">
           <button
             onClick={onRestart}
