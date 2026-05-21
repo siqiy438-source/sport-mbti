@@ -7,8 +7,12 @@ import {
   type Personality,
 } from "../types";
 import { navigate } from "../lib/router";
+import Avatar from "../components/Avatar";
+import GenderSwitcher from "../components/GenderSwitcher";
+import { useGender } from "../lib/gender-context";
 
 export default function PersonalityDetail({ id }: { id: string }) {
+  const { gender } = useGender();
   const p = personalities.find((x) => x.id === id);
   if (!p) {
     return (
@@ -33,7 +37,7 @@ export default function PersonalityDetail({ id }: { id: string }) {
       <Header />
       <div className="max-w-4xl mx-auto px-5 py-6 md:py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 mb-6">
-          <HeroCard personality={p} />
+          <HeroCard personality={p} gender={gender} />
           <ProfileCard personality={p} />
         </div>
 
@@ -65,7 +69,7 @@ export default function PersonalityDetail({ id }: { id: string }) {
 function Header() {
   return (
     <header className="sticky top-0 z-10 bg-bg/85 backdrop-blur border-b border-ink/5">
-      <div className="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between">
+      <div className="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
         <button
           onClick={() => navigate({ name: "landing" })}
           className="flex items-center gap-2 hover:opacity-80 transition"
@@ -75,46 +79,55 @@ function Header() {
           </div>
           <span className="font-medium tracking-wide text-sm">SMBTI</span>
         </button>
-        <nav className="flex items-center gap-4 text-sm text-muted">
-          <button
-            onClick={() => navigate({ name: "quiz" })}
-            className="hover:text-accent transition"
-          >
-            开始测试
-          </button>
+        <nav className="flex items-center gap-3 md:gap-4 text-sm text-muted">
           <button
             onClick={() => navigate({ name: "gallery" })}
-            className="hover:text-accent transition"
+            className="hover:text-accent transition hidden sm:inline"
           >
             人格图鉴
           </button>
+          <GenderSwitcher />
         </nav>
       </div>
     </header>
   );
 }
 
-function HeroCard({ personality }: { personality: Personality }) {
+function HeroCard({
+  personality,
+  gender,
+}: {
+  personality: Personality;
+  gender: ReturnType<typeof useGender>["gender"];
+}) {
   return (
-    <div className="bg-card rounded-3xl p-6 md:p-8 shadow-card flex flex-col items-center justify-center text-center min-h-[280px]">
-      <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-accentSoft text-accent text-xs">
-        <span>MBTI</span>
-        <span className="font-bold tracking-widest">{personality.mbti}</span>
+    <div className="bg-bg rounded-3xl overflow-hidden shadow-card flex flex-col">
+      <div className="relative bg-bg">
+        <div className="absolute top-3 left-3 z-10 text-xs text-muted tracking-widest">
+          你的人格类型是：
+        </div>
+        <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-card/90 backdrop-blur text-accent text-[11px] font-bold tracking-widest">
+          {personality.mbti}
+        </div>
+        <Avatar
+          id={personality.id}
+          gender={gender}
+          emoji={personality.emoji}
+          sizeClassName="w-full aspect-square"
+          emojiClassName="text-9xl"
+          alt={`${personality.cn} - ${personality.en}`}
+        />
       </div>
-      <div className="text-xs text-muted mb-2 tracking-widest">
-        人格类型：
-      </div>
-      <div className="font-serif text-3xl md:text-4xl text-ink mb-3">
-        {personality.cn}
-      </div>
-      <div className="text-7xl md:text-8xl my-3 leading-none">
-        {personality.emoji}
-      </div>
-      <div className="font-serif text-xl md:text-2xl text-accent mt-2 tracking-wide">
-        {personality.en}
-      </div>
-      <div className="text-muted italic mt-4 text-sm">
-        「{personality.punch}」
+      <div className="bg-card px-5 py-5 text-center">
+        <div className="font-serif text-xl text-accent tracking-wide">
+          {personality.en}
+        </div>
+        <div className="font-serif text-3xl md:text-4xl text-ink mt-1">
+          {personality.cn}
+        </div>
+        <div className="text-muted italic mt-3 text-sm">
+          「{personality.punch}」
+        </div>
       </div>
     </div>
   );
@@ -133,9 +146,12 @@ function ProfileCard({ personality }: { personality: Personality }) {
       <p className="text-muted text-sm md:text-base mt-3">
         「{personality.punch}」
       </p>
-      <div className="mt-auto pt-6">
+      <div className="mt-auto pt-6 flex flex-wrap gap-2">
         <span className="inline-block px-3 py-1 rounded-full bg-accentSoft text-accent text-xs">
           {personality.category}
+        </span>
+        <span className="inline-block px-3 py-1 rounded-full bg-ink/5 text-ink/70 text-xs font-mono tracking-widest">
+          MBTI · {personality.mbti}
         </span>
       </div>
     </div>
@@ -168,11 +184,7 @@ function DimensionCard({
 }) {
   const level = value >= 8 ? "高" : value <= 3 ? "低" : "中";
   const levelColor =
-    value >= 8
-      ? "text-accent"
-      : value <= 3
-        ? "text-muted"
-        : "text-ink/70";
+    value >= 8 ? "text-accent" : value <= 3 ? "text-muted" : "text-ink/70";
 
   return (
     <div className="bg-accentSoft/40 rounded-2xl p-4">
@@ -188,9 +200,7 @@ function DimensionCard({
           style={{ width: `${value * 10}%` }}
         />
       </div>
-      {note && (
-        <p className="text-sm text-ink/75 leading-relaxed">{note}</p>
-      )}
+      {note && <p className="text-sm text-ink/75 leading-relaxed">{note}</p>}
     </div>
   );
 }

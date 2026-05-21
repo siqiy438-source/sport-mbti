@@ -54,6 +54,9 @@ export type DimensionKey = SportDim;
 export const DIMENSIONS = SPORT_DIMS;
 export const DIMENSION_LABELS = SPORT_DIM_LABELS;
 
+// ============ 头像性别 ============
+export type Gender = "male" | "female";
+
 // ============ 人格定义 ============
 export interface Personality {
   id: string;

@@ -5,6 +5,7 @@ import Result from "./pages/Result";
 import PersonalityDetail from "./pages/PersonalityDetail";
 import Gallery from "./pages/Gallery";
 import { navigate, useRoute } from "./lib/router";
+import { GenderProvider } from "./lib/gender-context";
 import type { MbtiType, Personality } from "./types";
 
 const STORAGE_KEY = "smbti_result_v2";
@@ -37,8 +38,9 @@ export default function App() {
   }, [route, stored]);
 
   return (
-    <div className="min-h-screen bg-bg text-ink">
-      {route.name === "landing" && (
+    <GenderProvider>
+      <div className="min-h-screen bg-bg text-ink">
+        {route.name === "landing" && (
         <Landing
           lastResult={stored?.personality ?? null}
           onStart={() => navigate({ name: "quiz" })}
@@ -71,13 +73,14 @@ export default function App() {
         />
       )}
       {route.name === "type" && <PersonalityDetail id={route.id} />}
-      {route.name === "gallery" && (
-        <Gallery
-          onPickType={(id) => navigate({ name: "type", id })}
-          onHome={() => navigate({ name: "landing" })}
-          onStart={() => navigate({ name: "quiz" })}
-        />
-      )}
-    </div>
+        {route.name === "gallery" && (
+          <Gallery
+            onPickType={(id) => navigate({ name: "type", id })}
+            onHome={() => navigate({ name: "landing" })}
+            onStart={() => navigate({ name: "quiz" })}
+          />
+        )}
+      </div>
+    </GenderProvider>
   );
 }

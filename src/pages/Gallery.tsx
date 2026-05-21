@@ -1,4 +1,7 @@
 import { personalities } from "../data/personalities";
+import Avatar from "../components/Avatar";
+import GenderSwitcher from "../components/GenderSwitcher";
+import { useGender } from "../lib/gender-context";
 
 export default function Gallery({
   onPickType,
@@ -9,6 +12,8 @@ export default function Gallery({
   onHome: () => void;
   onStart: () => void;
 }) {
+  const { gender } = useGender();
+
   // 按 category 分组
   const grouped = personalities.reduce<Record<string, typeof personalities>>(
     (acc, p) => {
@@ -21,7 +26,7 @@ export default function Gallery({
   return (
     <div className="pb-24">
       <header className="sticky top-0 z-10 bg-bg/85 backdrop-blur border-b border-ink/5">
-        <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
           <button
             onClick={onHome}
             className="flex items-center gap-2 hover:opacity-80 transition"
@@ -31,12 +36,15 @@ export default function Gallery({
             </div>
             <span className="font-medium tracking-wide text-sm">SMBTI</span>
           </button>
-          <button
-            onClick={onStart}
-            className="text-sm text-accent hover:opacity-80 transition"
-          >
-            开始测试 →
-          </button>
+          <div className="flex items-center gap-3">
+            <GenderSwitcher />
+            <button
+              onClick={onStart}
+              className="text-sm text-accent hover:opacity-80 transition"
+            >
+              开始测试 →
+            </button>
+          </div>
         </div>
       </header>
 
@@ -55,22 +63,33 @@ export default function Gallery({
               <span className="text-xs text-muted">{items.length} 种</span>
               <div className="flex-1 h-px bg-ink/10" />
             </div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
               {items.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => onPickType(p.id)}
-                  className="bg-card rounded-2xl p-3 md:p-4 shadow-card text-center hover:scale-105 hover:bg-accentSoft/30 transition cursor-pointer"
+                  className="group bg-bg rounded-2xl overflow-hidden text-center hover:scale-[1.03] transition cursor-pointer flex flex-col"
                 >
-                  <div className="text-[9px] text-muted/80 font-mono mb-1 tracking-widest">
-                    {p.mbti}
+                  <div className="relative bg-bg">
+                    <Avatar
+                      id={p.id}
+                      gender={gender}
+                      emoji={p.emoji}
+                      sizeClassName="w-full aspect-square"
+                      emojiClassName="text-5xl"
+                      alt={`${p.cn} - ${p.en}`}
+                    />
+                    <div className="absolute top-2 right-2 text-[10px] text-muted/80 font-mono tracking-widest bg-card/70 backdrop-blur px-1.5 py-0.5 rounded">
+                      {p.mbti}
+                    </div>
                   </div>
-                  <div className="text-3xl md:text-4xl mb-1">{p.emoji}</div>
-                  <div className="text-accent font-medium text-xs md:text-sm">
-                    {p.en}
-                  </div>
-                  <div className="text-sm md:text-base font-medium">
-                    {p.cn}
+                  <div className="px-2 py-3 bg-card group-hover:bg-accentSoft/50 transition">
+                    <div className="text-accent font-medium text-xs md:text-sm tracking-wide">
+                      {p.en}
+                    </div>
+                    <div className="text-sm md:text-base font-medium mt-0.5">
+                      {p.cn}
+                    </div>
                   </div>
                 </button>
               ))}

@@ -1,4 +1,7 @@
 import { personalities } from "../data/personalities";
+import Avatar from "../components/Avatar";
+import GenderSwitcher from "../components/GenderSwitcher";
+import { useGender } from "../lib/gender-context";
 import type { Personality } from "../types";
 
 export default function Landing({
@@ -14,6 +17,8 @@ export default function Landing({
   onPickType: (id: string) => void;
   onViewGallery: () => void;
 }) {
+  const { gender } = useGender();
+
   return (
     <div className="max-w-5xl mx-auto px-5 py-6 md:py-12">
       <header className="flex items-center justify-between mb-10 md:mb-14">
@@ -23,11 +28,8 @@ export default function Landing({
           </div>
           <span className="text-lg font-medium tracking-wide">SMBTI</span>
         </div>
-        <nav className="flex items-center gap-5 text-sm text-muted">
-          <button
-            onClick={onStart}
-            className="hover:text-accent transition"
-          >
+        <nav className="flex items-center gap-3 md:gap-5 text-sm text-muted">
+          <button onClick={onStart} className="hover:text-accent transition">
             开始测试
           </button>
           <button
@@ -36,6 +38,7 @@ export default function Landing({
           >
             人格图鉴
           </button>
+          <GenderSwitcher />
         </nav>
       </header>
 
@@ -62,7 +65,7 @@ export default function Landing({
               onClick={onViewResult}
               className="text-sm text-muted underline hover:text-accent transition"
             >
-              查看上次结果：{lastResult.emoji} {lastResult.cn}
+              查看上次结果：{lastResult.cn}
             </button>
           )}
         </div>
@@ -72,21 +75,34 @@ export default function Landing({
         <h2 className="text-center text-muted text-sm mb-6 tracking-widest">
           ── 30 种运动人格图鉴 ──
         </h2>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
           {personalities.map((p) => (
             <button
               key={p.id}
               onClick={() => onPickType(p.id)}
-              className="bg-card rounded-2xl p-3 md:p-4 shadow-card text-center hover:scale-105 hover:bg-accentSoft/30 transition cursor-pointer"
+              className="group bg-bg rounded-2xl overflow-hidden text-center hover:scale-[1.03] transition cursor-pointer flex flex-col"
             >
-              <div className="text-[9px] text-muted/80 font-mono mb-1 tracking-widest">
-                {p.mbti}
+              <div className="relative bg-bg">
+                <Avatar
+                  id={p.id}
+                  gender={gender}
+                  emoji={p.emoji}
+                  sizeClassName="w-full aspect-square"
+                  emojiClassName="text-5xl"
+                  alt={`${p.cn} - ${p.en}`}
+                />
+                <div className="absolute top-2 right-2 text-[10px] text-muted/80 font-mono tracking-widest bg-card/70 backdrop-blur px-1.5 py-0.5 rounded">
+                  {p.mbti}
+                </div>
               </div>
-              <div className="text-3xl md:text-4xl mb-1">{p.emoji}</div>
-              <div className="text-accent font-medium text-xs md:text-sm">
-                {p.en}
+              <div className="px-2 py-3 bg-card group-hover:bg-accentSoft/50 transition">
+                <div className="text-accent font-medium text-xs md:text-sm tracking-wide">
+                  {p.en}
+                </div>
+                <div className="text-sm md:text-base font-medium mt-0.5">
+                  {p.cn}
+                </div>
               </div>
-              <div className="text-sm md:text-base font-medium">{p.cn}</div>
             </button>
           ))}
         </div>

@@ -6,6 +6,9 @@ import {
   type MbtiType,
   type Personality,
 } from "../types";
+import Avatar from "../components/Avatar";
+import GenderSwitcher from "../components/GenderSwitcher";
+import { useGender } from "../lib/gender-context";
 
 export default function Result({
   personality,
@@ -18,6 +21,7 @@ export default function Result({
   onRestart: () => void;
   onHome: () => void;
 }) {
+  const { gender } = useGender();
   const cardRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
 
@@ -30,7 +34,7 @@ export default function Result({
         backgroundColor: "#F5EFE3",
       });
       const link = document.createElement("a");
-      link.download = `smbti-${personality.en}.png`;
+      link.download = `smbti-${personality.en}-${gender}.png`;
       link.href = dataUrl;
       link.click();
     } finally {
@@ -39,56 +43,91 @@ export default function Result({
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-5 py-8 md:py-12">
+    <div className="max-w-2xl mx-auto px-5 py-6 md:py-10">
       <div
         ref={cardRef}
-        className="bg-card rounded-3xl p-6 md:p-10 shadow-card"
+        className="bg-bg rounded-3xl overflow-hidden shadow-card"
       >
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-accentSoft text-accent text-xs md:text-sm">
+        {/* 顶部品牌条 */}
+        <div className="flex items-center justify-between px-6 pt-5 pb-2">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-[10px] font-bold">
+              S
+            </div>
+            <span className="font-medium tracking-wide text-xs text-muted">
+              SMBTI
+            </span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accentSoft text-accent text-[11px]">
             <span>MBTI</span>
             <span className="font-bold tracking-widest">{userMbti}</span>
             {userMbti !== personality.mbti && (
-              <span className="text-muted/80 text-[10px]">
-                · 推荐型 {personality.mbti}
+              <span className="text-muted/70 text-[9px]">
+                · 推 {personality.mbti}
               </span>
             )}
           </div>
-          <div className="text-xs md:text-sm text-muted mb-2 tracking-widest">
+        </div>
+
+        {/* 主视觉：大图 */}
+        <div className="relative bg-bg">
+          <div className="absolute top-2 left-6 text-[11px] text-muted tracking-widest z-10">
             你的运动人格类型是：
           </div>
-          <div className="text-7xl md:text-8xl mb-4 leading-none">
-            {personality.emoji}
-          </div>
-          <div className="font-serif text-xl md:text-2xl text-accent mb-1 tracking-wide">
+          <Avatar
+            id={personality.id}
+            gender={gender}
+            emoji={personality.emoji}
+            sizeClassName="w-full aspect-square max-w-md mx-auto"
+            emojiClassName="text-9xl"
+            alt={`${personality.cn} - ${personality.en}`}
+          />
+        </div>
+
+        {/* 名字 + 一句吐槽 */}
+        <div className="bg-card px-6 pt-5 pb-6 text-center">
+          <div className="font-serif text-lg md:text-xl text-accent tracking-wide">
             {personality.en}
           </div>
-          <div className="font-serif text-3xl md:text-5xl text-ink mb-6">
+          <div className="font-serif text-3xl md:text-5xl text-ink mt-1">
             {personality.cn}
           </div>
-          <div className="text-muted italic mb-6 text-base md:text-lg">
+          <div className="text-muted italic mt-3 text-sm md:text-base">
             「{personality.punch}」
           </div>
         </div>
 
-        <div className="bg-accentSoft rounded-2xl p-5 md:p-6 mb-6 text-ink/90 leading-relaxed text-sm md:text-base">
-          {personality.desc}
+        {/* 描述 */}
+        <div className="bg-card px-6 pb-6">
+          <div className="bg-accentSoft/60 rounded-2xl p-5 text-ink/90 leading-relaxed text-sm md:text-base">
+            {personality.desc}
+          </div>
         </div>
 
-        <RadarChart personality={personality} />
+        {/* 雷达图 */}
+        <div className="bg-card px-6 pb-6">
+          <RadarChart personality={personality} />
+        </div>
 
-        <div className="text-center text-xs text-muted mt-4">
-          SMBTI · {personality.category}
+        {/* 底栏 */}
+        <div className="bg-card px-6 pb-5 text-center text-xs text-muted border-t border-ink/5 pt-4">
+          SMBTI · {personality.category} · siqiy438-source.github.io/sport-mbti
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-3">
+      {/* 切换 + 下载（不在卡片里，只是操作区） */}
+      <div className="mt-6 space-y-3">
+        <div className="flex items-center justify-between gap-3 px-1">
+          <span className="text-xs text-muted">海报形象</span>
+          <GenderSwitcher variant="full" />
+        </div>
+
         <button
           onClick={downloadCard}
           disabled={saving}
           className="w-full py-3.5 bg-accent text-white rounded-full hover:opacity-90 transition disabled:opacity-60 font-medium"
         >
-          {saving ? "生成中..." : "📥 下载结果图 · 分享给朋友"}
+          {saving ? "生成中..." : "下载结果图 · 分享给朋友"}
         </button>
         <div className="flex gap-3">
           <button
@@ -110,10 +149,10 @@ export default function Result({
 }
 
 function RadarChart({ personality }: { personality: Personality }) {
-  const size = 280;
+  const size = 240;
   const cx = size / 2;
   const cy = size / 2;
-  const r = 90;
+  const r = 75;
   const n = DIMENSIONS.length;
   const angles = DIMENSIONS.map((_, i) => (i / n) * Math.PI * 2 - Math.PI / 2);
 
@@ -171,7 +210,7 @@ function RadarChart({ personality }: { personality: Personality }) {
               y={y}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize={13}
+              fontSize={12}
               fill="#7B8474"
             >
               {DIMENSION_LABELS[d]} {personality.traits[d]}
