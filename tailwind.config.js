@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  future: {
+    // hover: 样式只在真实鼠标设备上生效，避免手机端点击后 sticky hover 卡住
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {

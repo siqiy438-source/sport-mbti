@@ -81,15 +81,21 @@ export default function Quiz({
         {q.prompt}
       </h2>
 
-      <div className="space-y-3">
+      {/* key={q.id + picked} 强制题目切换时所有选项 button 重新挂载，
+          避免浏览器 focus / hover 伪类状态从上一题被继承（手机端的「框框还在」）*/}
+      <div key={q.id} className="space-y-3">
         {q.options.map((opt, i) => {
           const isPicked = picked === i;
           return (
             <button
-              key={i}
-              onClick={() => pick(opt, i)}
+              key={`${q.id}-${i}`}
+              onClick={(e) => {
+                pick(opt, i);
+                // 立即让按钮失焦，防止 focus 高亮在跳到下一题前残留
+                (e.currentTarget as HTMLButtonElement).blur();
+              }}
               disabled={picked !== null}
-              className={`w-full text-left px-5 py-4 rounded-2xl shadow-card border transition ${
+              className={`w-full text-left px-5 py-4 rounded-2xl shadow-card border transition focus:outline-none ${
                 isPicked
                   ? "bg-accent text-white border-accent"
                   : "bg-card border-transparent hover:bg-accentSoft hover:border-accent disabled:opacity-50"
