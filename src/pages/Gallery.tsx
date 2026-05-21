@@ -1,6 +1,7 @@
 import { personalities } from "../data/personalities";
 import Avatar from "../components/Avatar";
 import GenderSwitcher from "../components/GenderSwitcher";
+import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 
 export default function Gallery({
@@ -29,12 +30,10 @@ export default function Gallery({
         <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
           <button
             onClick={onHome}
-            className="flex items-center gap-2 hover:opacity-80 transition"
+            className="hover:opacity-80 transition"
+            aria-label="返回首页"
           >
-            <div className="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">
-              S
-            </div>
-            <span className="font-medium tracking-wide text-sm">SMBTI</span>
+            <Logo size="sm" />
           </button>
           <div className="flex items-center gap-3">
             <GenderSwitcher />

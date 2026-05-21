@@ -1,6 +1,7 @@
 import { personalities } from "../data/personalities";
 import Avatar from "../components/Avatar";
 import GenderSwitcher from "../components/GenderSwitcher";
+import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 import type { Personality } from "../types";
 
@@ -22,12 +23,8 @@ export default function Landing({
   return (
     <div className="max-w-5xl mx-auto px-5 py-6 md:py-12">
       <header className="flex items-center justify-between mb-10 md:mb-14">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center font-bold">
-            S
-          </div>
-          <span className="text-lg font-medium tracking-wide">SMBTI</span>
-        </div>
+        <Logo size="md" showTagline />
+
         <nav className="flex items-center gap-3 md:gap-5 text-sm text-muted">
           <button onClick={onStart} className="hover:text-accent transition">
             开始测试

@@ -8,6 +8,7 @@ import {
 } from "../types";
 import Avatar from "../components/Avatar";
 import GenderSwitcher from "../components/GenderSwitcher";
+import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 
 export default function Result({
@@ -50,14 +51,7 @@ export default function Result({
       >
         {/* 顶部品牌条 */}
         <div className="flex items-center justify-between px-6 pt-5 pb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-[10px] font-bold">
-              S
-            </div>
-            <span className="font-medium tracking-wide text-xs text-muted">
-              SMBTI
-            </span>
-          </div>
+          <Logo size="sm" />
           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accentSoft text-accent text-[11px]">
             <span>MBTI</span>
             <span className="font-bold tracking-widest">{userMbti}</span>

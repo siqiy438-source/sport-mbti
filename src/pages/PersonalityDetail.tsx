@@ -9,6 +9,7 @@ import {
 import { navigate } from "../lib/router";
 import Avatar from "../components/Avatar";
 import GenderSwitcher from "../components/GenderSwitcher";
+import Logo from "../components/Logo";
 import { useGender } from "../lib/gender-context";
 
 export default function PersonalityDetail({ id }: { id: string }) {
@@ -72,12 +73,10 @@ function Header() {
       <div className="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between gap-3">
         <button
           onClick={() => navigate({ name: "landing" })}
-          className="flex items-center gap-2 hover:opacity-80 transition"
+          className="hover:opacity-80 transition"
+          aria-label="返回首页"
         >
-          <div className="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">
-            S
-          </div>
-          <span className="font-medium tracking-wide text-sm">SMBTI</span>
+          <Logo size="sm" />
         </button>
         <nav className="flex items-center gap-3 md:gap-4 text-sm text-muted">
           <button
