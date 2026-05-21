@@ -39,7 +39,7 @@ export default function Gallery({
             <GenderSwitcher />
             <button
               onClick={onStart}
-              className="text-sm text-accent hover:opacity-80 transition"
+              className="hidden sm:inline text-sm text-accent hover:opacity-80 transition whitespace-nowrap"
             >
               开始测试 →
             </button>

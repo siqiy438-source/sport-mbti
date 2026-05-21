@@ -60,7 +60,7 @@ export default function Logo({
         </span>
         {showTagline && (
           <span
-            className={`text-muted/70 mt-1 uppercase ${s.tagline}`}
+            className={`hidden sm:inline text-muted/70 mt-1 uppercase whitespace-nowrap ${s.tagline}`}
             style={{ letterSpacing: "0.18em" }}
           >
             Sport · Personality
